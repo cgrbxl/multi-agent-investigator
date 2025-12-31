@@ -1,0 +1,25 @@
+# Node modules
+node_modules/
+
+# Generated investigation projects (not part of template)
+*-investigation/
+*-analysis/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+.temp/
