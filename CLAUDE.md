@@ -27,6 +27,23 @@ node orchestrator.js
 ### Development
 There are no build, test, or lint commands - this is a template that generates projects, not a compiled application.
 
+## Recent Updates
+
+### Investigation Purpose (Latest)
+The wizard now asks for an "investigation purpose" (question 2) that defines the objective of the investigation. Examples:
+- "Assess democratic values and human rights record"
+- "Evaluate ethical and economic worth for investment decisions"
+- "Understand historical legacy and impact on modern society"
+- "Determine policy effectiveness for citizen welfare"
+
+This purpose is embedded in:
+- `config/topic.json` - Investigation configuration
+- `agents/scout-*.md` - Explorer agent prompts (with guidance on how to tailor searches)
+- Generated README and QUICKSTART files
+- Orchestrator output
+
+All agents should reference this purpose to tailor their approach while maintaining ethical framework compliance.
+
 ## Architecture
 
 ### Template Structure
@@ -39,8 +56,8 @@ When wizard runs, it creates a project with:
 ```
 <project-name>/
 ├── config/
-│   ├── investigation.json      # Complete configuration
-│   ├── topic.json              # Investigation parameters
+│   ├── investigation.json      # Complete configuration (includes purpose)
+│   ├── topic.json              # Investigation parameters (includes purpose)
 │   └── sentiment-rules.json    # Ethical framework + scoring rules
 ├── agents/
 │   └── scout-*.md              # Generated prompts (N files, one per time period)
@@ -113,16 +130,23 @@ These principles are **hardcoded** and cannot be overridden:
 1. **Check for orchestrator.js**: Run `node orchestrator.js` to see execution plan
 2. **Read agent prompts**: Scout agents are in `agents/scout-*.md`
 3. **Read configuration**: Check `config/investigation.json` and `config/sentiment-rules.json`
-4. **Execute Phase 1 in parallel**: Launch ALL explorer agents in a SINGLE message with multiple Task tool calls
-5. **Execute Phases 2-4 sequentially**: Wait for each phase to complete before starting next
+4. **Note the investigation purpose**: This guides what agents should focus on
+5. **Execute Phase 1 in parallel**: Launch ALL explorer agents in a SINGLE message with multiple Task tool calls
+6. **Execute Phases 2-4 sequentially**: Wait for each phase to complete before starting next
 
 ### Creating Agent Prompts for Phases 2-4
 
 The wizard only generates scout (explorer) prompts. For analyzer, synthesizer, and visualizer:
 - Read the configuration files to understand parameters
+- **Pay attention to the investigation purpose** - tailor analysis/synthesis to this objective
 - Apply the ethical framework from `config/sentiment-rules.json`
 - Follow the data flow: raw → analyzed → synthesized → visualizations
 - Use JSONL format (one JSON per line, not array) for streaming data
+
+For example, if the purpose is "Evaluate ethical and economic worth for investment decisions":
+- Analyzer should focus on ESG factors, financial metrics, labor practices
+- Synthesizer should identify trends in corporate responsibility and financial performance
+- Visualizer should highlight investment-relevant findings
 
 ### Data Formats
 

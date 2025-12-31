@@ -116,7 +116,9 @@ async function runWizard() {
 
   config.investigation.topic = await ask('\n1. What topic do you want to investigate?\n   Example: "European migration policy", "Climate change action", "AI regulation"\n   > ');
 
-  config.investigation.type = await ask('\n2. What type of investigation is this?\n   [1] Current news analysis (recent developments)\n   [2] Historical investigation (past events)\n   [3] Mixed (historical context + current situation)\n   > ');
+  config.investigation.purpose = await ask('\n2. What is the PURPOSE of this investigation?\n   Example: "Assess democratic values and human rights record"\n           "Evaluate ethical and economic worth for investment decisions"\n           "Understand historical legacy and impact on modern society"\n           "Determine policy effectiveness for citizen welfare"\n   > ');
+
+  config.investigation.type = await ask('\n3. What type of investigation is this?\n   [1] Current news analysis (recent developments)\n   [2] Historical investigation (past events)\n   [3] Mixed (historical context + current situation)\n   > ');
 
   const typeMap = {
     '1': 'current',
@@ -125,17 +127,17 @@ async function runWizard() {
   };
   config.investigation.type = typeMap[config.investigation.type] || 'mixed';
 
-  config.investigation.keywords = await ask('\n3. Enter keywords (comma-separated):\n   Example: "migration, refugees, asylum policy, border control"\n   > ');
+  config.investigation.keywords = await ask('\n4. Enter keywords (comma-separated):\n   Example: "migration, refugees, asylum policy, border control"\n   > ');
   config.investigation.keywords = config.investigation.keywords.split(',').map(k => k.trim());
 
-  config.investigation.geographicScope = await ask('\n4. Geographic scope?\n   Example: "European Union", "Global", "United States"\n   > ');
+  config.investigation.geographicScope = await ask('\n5. Geographic scope?\n   Example: "European Union", "Global", "United States"\n   > ');
 
   // ===== SECTION 2: Time Periods & Agents =====
   console.log('\n' + '─'.repeat(70));
   console.log('SECTION 2: Time Periods & Explorer Agents');
   console.log('─'.repeat(70));
 
-  const numAgents = parseInt(await ask('\n5. How many explorer agents (time periods)?\n   Recommended: 3-5 agents\n   > '));
+  const numAgents = parseInt(await ask('\n6. How many explorer agents (time periods)?\n   Recommended: 3-5 agents\n   > '));
 
   config.agents.explorers = [];
 
@@ -175,7 +177,7 @@ async function runWizard() {
   console.log('  ✓ Evidence-based facts (positivistic)');
   console.log('  ✓ Democratic accountability (democratic)');
 
-  const perspectiveType = await ask('\n6. What specific perspective should guide the analysis?\n   [1] General citizen welfare (broad human impact)\n   [2] Specific group (e.g., "workers", "refugees", "youth")\n   [3] Environmental sustainability\n   [4] Democratic governance quality\n   [5] Custom (define your own)\n   > ');
+  const perspectiveType = await ask('\n7. What specific perspective should guide the analysis?\n   [1] General citizen welfare (broad human impact)\n   [2] Specific group (e.g., "workers", "refugees", "youth")\n   [3] Environmental sustainability\n   [4] Democratic governance quality\n   [5] Custom (define your own)\n   > ');
 
   const perspectiveMap = {
     '1': {
@@ -228,7 +230,7 @@ async function runWizard() {
   console.log('  ✓ Flag potential misinformation or propaganda');
   console.log('  ✓ Identify bias and conflicting narratives');
 
-  const validationLevel = await ask('\n7. Validation rigor level?\n   [1] Standard (credible sources, basic verification)\n   [2] High (multiple source verification, bias detection)\n   [3] Maximum (extensive cross-checking, propaganda detection)\n   > ');
+  const validationLevel = await ask('\n8. Validation rigor level?\n   [1] Standard (credible sources, basic verification)\n   [2] High (multiple source verification, bias detection)\n   [3] Maximum (extensive cross-checking, propaganda detection)\n   > ');
 
   const validationMap = {
     '1': 'standard',
@@ -254,7 +256,7 @@ async function runWizard() {
     }
   };
 
-  const addFlaggedSources = await ask('\n8. Any sources to flag as unreliable? (comma-separated, or press Enter to skip)\n   > ');
+  const addFlaggedSources = await ask('\n9. Any sources to flag as unreliable? (comma-separated, or press Enter to skip)\n   > ');
   if (addFlaggedSources) {
     config.validation.flaggedSources = addFlaggedSources.split(',').map(s => s.trim());
   }
@@ -264,7 +266,7 @@ async function runWizard() {
   console.log('SECTION 5: Output Configuration');
   console.log('─'.repeat(70));
 
-  const projectName = await ask('\n9. Project name (filesystem-safe, e.g., "eu-migration-analysis"):\n   > ');
+  const projectName = await ask('\n10. Project name (filesystem-safe, e.g., "eu-migration-analysis"):\n   > ');
 
   config.output = {
     projectName: projectName,
@@ -280,6 +282,7 @@ async function runWizard() {
   console.log('='.repeat(70));
 
   console.log(`\n📋 Investigation: ${config.investigation.topic}`);
+  console.log(`🎯 Purpose: ${config.investigation.purpose}`);
   console.log(`📅 Type: ${config.investigation.type}`);
   console.log(`🌍 Geographic Scope: ${config.investigation.geographicScope}`);
   console.log(`🔍 Keywords: ${config.investigation.keywords.join(', ')}`);
@@ -368,6 +371,7 @@ async function generateProject(config) {
 async function generateInvestigationConfig(root, config) {
   const investigationConfig = {
     topic: config.investigation.topic,
+    purpose: config.investigation.purpose,
     type: config.investigation.type,
     keywords: config.investigation.keywords,
     geographicScope: config.investigation.geographicScope,
@@ -449,9 +453,19 @@ ${agent.description}
 ## Investigation Parameters
 
 **Topic**: ${config.investigation.topic}
+**Purpose**: ${config.investigation.purpose}
 **Keywords**: ${config.investigation.keywords.join(', ')}
 **Geographic Scope**: ${config.investigation.geographicScope}
 **Time Period**: ${agent.dateRange.from} → ${agent.dateRange.to}
+
+## Investigation Objective
+
+${config.investigation.purpose}
+
+When searching and selecting sources, keep this objective in mind. Prioritize articles and information that are relevant to achieving this purpose. For example:
+- If assessing democratic values: focus on governance, transparency, human rights, accountability
+- If evaluating investment ethics: focus on ESG factors, labor practices, environmental impact, financial stability
+- If understanding historical legacy: focus on long-term impacts, contemporary interpretations, scholarly analyses
 
 ## Search Strategy
 
@@ -571,6 +585,7 @@ function main() {
   console.log('MULTI-AGENT INVESTIGATOR');
   console.log('='.repeat(70));
   console.log(\`\\nInvestigation: \${CONFIG.investigation.topic}\`);
+  console.log(\`Purpose: \${CONFIG.investigation.purpose}\`);
   console.log(\`Type: \${CONFIG.investigation.type}\`);
   console.log(\`Perspective: \${CONFIG.perspective.description}\`);
   console.log(\`Validation Level: \${CONFIG.validation.level.toUpperCase()}\`);
@@ -725,6 +740,12 @@ async function generateREADME(root, config) {
 
 This project uses a multi-agent research pipeline to investigate "${config.investigation.topic}" from ${config.perspective.description} perspective.
 
+### Investigation Purpose
+
+**${config.investigation.purpose}**
+
+This purpose guides all agents in their data collection, analysis, and synthesis. Each phase of the investigation is tailored to achieve this objective while maintaining ethical principles.
+
 ### Ethical Framework
 
 All analysis adheres to **immutable principles**:
@@ -739,6 +760,7 @@ ${config.perspective.mandatoryNegatives.map(n => `- ${n}`).join('\n')}
 ## Investigation Parameters
 
 - **Topic**: ${config.investigation.topic}
+- **Purpose**: ${config.investigation.purpose}
 - **Type**: ${config.investigation.type}
 - **Geographic Scope**: ${config.investigation.geographicScope}
 - **Keywords**: ${config.investigation.keywords.join(', ')}
@@ -879,6 +901,8 @@ async function generateQuickStart(root, config) {
   const quickstart = `# Quick Start Guide
 
 ## ${config.investigation.topic}
+
+**Purpose**: ${config.investigation.purpose}
 
 ### 1. Review Configuration
 
