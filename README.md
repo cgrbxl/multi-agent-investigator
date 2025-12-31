@@ -19,6 +19,7 @@ This template provides a complete framework for conducting rigorous, multi-agent
 ## Features
 
 ### 🎯 Fully Configurable
+- **Investigation purpose** - Define specific objectives (assess democracy, evaluate investments, understand historical legacy, etc.)
 - **Custom number of explorer agents** (1-10+)
 - **Flexible time periods** (relative or absolute dates)
 - **Any investigation topic** (news, historical, academic)
@@ -57,11 +58,13 @@ node config-wizard.js
 ```
 
 The wizard will ask you:
-1. **What to investigate** (topic, keywords, geographic scope)
+1. **What to investigate** (topic, purpose, keywords, geographic scope)
 2. **Time periods** (number of agents, date ranges)
 3. **Perspective** (general citizens, specific groups, custom)
 4. **Validation level** (standard, high, maximum)
 5. **Project configuration** (name, output formats)
+
+See `EXAMPLES-PURPOSE.md` for detailed examples of investigation purposes.
 
 ### 2. Generated Project
 
